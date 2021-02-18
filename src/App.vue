@@ -1,16 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <div>
+    <Time />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import { defineComponent } from 'vue';
+import { mapActions } from 'vuex';
+import Time from './components/Time.vue';
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: {
-    HelloWorld
+    Time
+  },
+  created() {
+    this.startTimeInterval();
+  },
+  methods: {
+    ...mapActions(['startTimeInterval'])
   }
 });
 </script>
