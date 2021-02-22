@@ -1,47 +1,70 @@
+import { getHours, getMinutes, getSeconds } from '@/utils/date';
 import { padLeft } from '@/utils/pad';
+import { delayed, interval } from '@/utils/timer';
+import {
+  compose,
+  converge,
+  identity,
+  join,
+  multiply,
+  nthArg,
+  prop,
+  subtract,
+  toString,
+  unapply,
+} from 'ramda';
 import { createStore } from 'vuex';
+
+const SECOND = 1000;
+const MINUTE = SECOND * 60;
+
+const getGetters = nthArg(1);
 
 export default createStore({
   state: {
-    currentTime: new Date()
+    currentTime: new Date(),
+    sayings: ['1', '2', '3', '4', '5'],
   },
   getters: {
-    currentHours(state) {
-      const hours = state.currentTime.getHours();
-      return padLeft(2, '0', hours.toString());
-    },
-    currentMinutes(state) {
-      const minutes = state.currentTime.getMinutes();
-      return padLeft(2, '0', minutes.toString());
-    },
-    formattedCurrentTime(_, getters) {
-      return `${getters.currentHours}:${getters.currentMinutes}`;
-    }
+    currentHours: compose(
+      padLeft(2, '0'),
+      toString,
+      getHours,
+      prop('currentTime'),
+    ),
+    currentMinutes: compose(
+      padLeft(2, '0'),
+      toString,
+      getMinutes,
+      prop('currentTime'),
+    ),
+    formattedCurrentTime: compose(
+      join(':'),
+      converge(unapply(identity), [
+        prop('currentHours'),
+        prop('currentMinutes'),
+      ]),
+      getGetters,
+    ),
   },
   mutations: {
     setCurrentTime(state) {
       state.currentTime = new Date();
-      console.log(
-        '🚀 ~ file: index.ts ~ line 15 ~ setCurrentTime ~ state.currentTime',
-        state.currentTime
-      );
-    }
+    },
   },
   actions: {
-    startTimeInterval(context) {
-      const remainSeconds =
-        (60 - context.state.currentTime.getMinutes()) * 1000;
-      console.log(
-        '🚀 ~ file: index.ts ~ line 24 ~ startTimeInterval ~ remainSeconds',
-        remainSeconds
-      );
-      setTimeout(() => {
-        context.commit('setCurrentTime');
-        setInterval(() => {
-          context.commit('setCurrentTime');
-        }, 1000 * 60);
-      }, remainSeconds);
-    }
+    initTimeInterval({ dispatch, state }) {
+      compose(
+        delayed(() => dispatch('startTimeInterval')),
+        subtract(MINUTE),
+        multiply(1000),
+        getSeconds,
+      )(state.currentTime);
+    },
+    startTimeInterval({ commit }) {
+      commit('setCurrentTime');
+      interval(() => commit('setCurrentTime'), MINUTE);
+    },
   },
-  modules: {}
+  modules: {},
 });
