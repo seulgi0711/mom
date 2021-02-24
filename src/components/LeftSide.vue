@@ -1,5 +1,5 @@
 <template>
-  <div class="left-side-wrapper">
+  <div class="leftside-wrapper">
     <Time />
     <Greeting />
   </div>
@@ -21,10 +21,11 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.left-side-wrapper {
+.leftside-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: #333;
 }
 </style>

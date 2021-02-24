@@ -1,5 +1,5 @@
 <template>
-  <div>{{ this.greetingByTime }}</div>
+  <div class="greeting-wrapper">{{ greetingByTime }}</div>
 </template>
 
 <script>
@@ -15,14 +15,19 @@ export default defineComponent({
     greetingByTime() {
       return cond([
         [within(0, 5), always('Hello!')],
-        [within(6, 12), always('Good Morning!')],
-        [within(13, 18), always('Good Afternoon!')],
-        [within(19, 21), always('Good Evening!')],
-        [within(20, 24), always('Good Night!')],
+        [within(6, 11), always('Good Morning!')],
+        [within(12, 17), always('Good Afternoon!')],
+        [within(18, 20), always('Good Evening!')],
+        [within(21, 24), always('Good Night!')],
       ])(this.currentHours);
     },
   },
 });
 </script>
 
-<style></style>
+<style scoped>
+.greeting-wrapper {
+  font-size: 3em;
+  font-weight: 500;
+}
+</style>

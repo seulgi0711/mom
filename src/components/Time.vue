@@ -14,7 +14,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .time-wrapper {
   font-size: 10em;
   font-weight: bold;

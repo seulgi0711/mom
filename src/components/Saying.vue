@@ -1,5 +1,5 @@
 <template>
-  <div>{{ satying }}</div>
+  <div class="saying-wrapper">"{{ satying }}"</div>
 </template>
 
 <script>
@@ -26,4 +26,13 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style scoped>
+.saying-wrapper {
+  margin-top: 1em;
+  font-size: 1.5em;
+  opacity: 0.5;
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+}
+</style>

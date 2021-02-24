@@ -1,7 +1,10 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import store from "./store";
+import app from './app';
+import store from './store';
 
-const app = createApp(App);
 app.use(store);
-app.mount("#app");
+
+// keys(directives).forEach(name => {
+//   app.directive(name, directives[name]);
+// });
+
+app.mount('#app');
