@@ -8,27 +8,20 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import '@/global.css';
-import { defineComponent } from 'vue';
-import { mapActions } from 'vuex';
+import { onMounted } from 'vue';
 import LeftSide from '@/components/LeftSide.vue';
 import Bg from '@/components/Bg.vue';
 import RightSide from '@/components/RightSide.vue';
+import { useStore } from './store';
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    RightSide,
-    Bg,
-    LeftSide,
-  },
-  created() {
-    this.initTimeInterval();
-  },
-  methods: {
-    ...mapActions(['initTimeInterval']),
-  },
+const store = useStore();
+
+const initTimeInterval = () => store.dispatch('startTimeInterval');
+
+onMounted(() => {
+  initTimeInterval();
 });
 </script>
 

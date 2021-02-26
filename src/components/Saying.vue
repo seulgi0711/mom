@@ -1,28 +1,20 @@
 <template>
-  <div class="saying-wrapper">"{{ satying }}"</div>
+  <div class="saying-wrapper">"{{ saying }}"</div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, onMounted, ref } from 'vue';
 import { randomRange } from '@/utils/random';
-import { mapState } from 'vuex';
+import { useStore } from '@/store';
 
-export default defineComponent({
-  name: 'Saying',
-  data() {
-    return {
-      index: -1,
-    };
-  },
-  created() {
-    this.index = randomRange(0, this.sayings.length - 1);
-  },
-  computed: {
-    ...mapState(['sayings']),
-    satying() {
-      return this.sayings[this.index];
-    },
-  },
+const store = useStore();
+const index = ref(-1);
+
+const sayings = computed(() => store.state.sayings);
+const saying = computed(() => sayings.value[index.value]);
+
+onMounted(() => {
+  index.value = randomRange(0, sayings.value.length - 1);
 });
 </script>
 

@@ -2,17 +2,9 @@
   <div class="rightside-wrapper"><Todo /> <Saying /></div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import Saying from '@/components/Saying.vue';
 import Todo from '@/components/Todo.vue';
-
-export default {
-  name: 'RightSide',
-  components: {
-    Todo,
-    Saying,
-  },
-};
 </script>
 
 <style scoped>

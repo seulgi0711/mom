@@ -2,16 +2,12 @@
   <div class="time-wrapper">{{ formattedCurrentTime }}</div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-import { mapGetters } from 'vuex';
+<script lang="ts" setup>
+import { useStore } from '@/store';
+import { computed } from 'vue';
 
-export default defineComponent({
-  name: 'Time',
-  computed: {
-    ...mapGetters(['formattedCurrentTime']),
-  },
-});
+const store = useStore();
+const formattedCurrentTime = computed(() => store.getters.formattedCurrentTime);
 </script>
 
 <style scoped>

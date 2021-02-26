@@ -5,18 +5,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
 import Greeting from '@/components/Greeting.vue';
 import Time from '@/components/Time.vue';
-
-export default defineComponent({
-  name: 'LeftSide',
-  components: {
-    Greeting,
-    Time,
-  },
-});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

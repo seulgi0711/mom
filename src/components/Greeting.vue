@@ -2,26 +2,21 @@
   <div class="greeting-wrapper">{{ greetingByTime }}</div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { useStore } from '@/store';
 import { within } from '@/utils/number';
 import { always, cond } from 'ramda';
-import { defineComponent } from 'vue';
-import { mapGetters } from 'vuex';
+import { computed } from 'vue';
 
-export default defineComponent({
-  name: 'Greeting',
-  computed: {
-    ...mapGetters(['currentHours']),
-    greetingByTime() {
-      return cond([
-        [within(0, 5), always('Hello!')],
-        [within(6, 11), always('Good Morning!')],
-        [within(12, 17), always('Good Afternoon!')],
-        [within(18, 20), always('Good Evening!')],
-        [within(21, 24), always('Good Night!')],
-      ])(this.currentHours);
-    },
-  },
+const store = useStore();
+const greetingByTime = computed(() => {
+  return cond<number, string>([
+    [within(0, 5), always('Hello!')],
+    [within(6, 11), always('Good Morning!')],
+    [within(12, 17), always('Good Afternoon!')],
+    [within(18, 20), always('Good Evening!')],
+    [within(21, 24), always('Good Night!')],
+  ])(store.getters.currentHours);
 });
 </script>
 

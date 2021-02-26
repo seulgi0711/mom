@@ -18,14 +18,27 @@ import {
   toString,
   unapply,
 } from 'ramda';
-import { createStore } from 'vuex';
+import { InjectionKey } from 'vue';
+import { createStore, Store, useStore as baseUseStore } from 'vuex';
+
+export interface State {
+  currentTime: Date;
+  todo: string;
+  sayings: string[];
+}
+
+export const key: InjectionKey<Store<State>> = Symbol();
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
 
 const getGetters = nthArg(1);
 
-export default createStore({
+export function useStore() {
+  return baseUseStore();
+}
+
+export default createStore<State>({
   state: {
     currentTime: new Date(),
     todo: '',

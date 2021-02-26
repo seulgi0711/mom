@@ -2,28 +2,23 @@
   <div class="bg-wrapper" :style="wrapperStyle"></div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import * as api from '@/effects/api';
+import { computed, onMounted, ref } from 'vue';
 
-export default {
-  name: 'Bg',
-  data() {
-    return {
-      wrapperStyle: {
-        backgroundImage: '',
-      },
-    };
-  },
-  created() {
-    this.fetchBackground();
-  },
-  methods: {
-    async fetchBackground() {
-      const { color, urls } = await api.fetchBgUrl();
-      this.wrapperStyle.background = `center / cover no-repeat url("${urls.full}"), ${color}`;
-    },
-  },
-};
+const background = ref('');
+const wrapperStyle = computed(() => ({
+  background: background.value,
+}));
+
+async function fetchBackground() {
+  const { color, urls } = await api.fetchBgUrl();
+  background.value = `center / cover no-repeat url("${urls.full}"), ${color}`;
+}
+
+onMounted(() => {
+  fetchBackground();
+});
 </script>
 
 <style scoped>

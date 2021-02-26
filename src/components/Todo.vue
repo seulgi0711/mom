@@ -12,33 +12,24 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'vuex';
+<script lang="ts" setup>
+import { useStore } from '@/store';
+import { computed, onMounted, ref } from 'vue';
 
-export default defineComponent({
-  name: 'Todo',
-  data() {
-    return {
-      todoInputValue: '',
-    };
-  },
-  computed: {
-    ...mapState(['todo']),
-    hasTodo() {
-      return this.todo !== '';
-    },
-  },
-  methods: {
-    ...mapActions(['getTodo', 'setTodo']),
-    handleEnter() {
-      this.setTodo(this.todoInputValue);
-      this.todoInputValue = '';
-    },
-  },
-  created() {
-    this.getTodo();
-  },
+const store = useStore();
+const todoInputValue = ref('');
+const todo = computed(() => store.state.todo);
+const hasTodo = computed(() => todo.value !== '');
+const getTodo = () => store.dispatch('getTodo');
+const setTodo = (value: string) => store.dispatch('setTodo', value);
+
+function handleEnter() {
+  setTodo(todoInputValue.value);
+  todoInputValue.value = '';
+}
+
+onMounted(() => {
+  getTodo();
 });
 </script>
 
