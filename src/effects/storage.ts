@@ -11,3 +11,7 @@ export const setItem = curry(
     return localStorage.setItem(key, value);
   },
 );
+
+export const removeItem = (key: string): IO<void> => () => {
+  localStorage.removeItem(key);
+};

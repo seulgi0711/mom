@@ -2,8 +2,14 @@
   <div class="app-wrapper">
     <Bg />
     <div class="contents">
-      <LeftSide />
-      <RightSide />
+      <div class="leftside-wrapper">
+        <Time />
+        <Greeting />
+      </div>
+      <div class="rightside-wrapper">
+        <Todo />
+        <Saying />
+      </div>
     </div>
   </div>
 </template>
@@ -11,14 +17,14 @@
 <script lang="ts" setup>
 import '@/global.css';
 import { onMounted } from 'vue';
-import LeftSide from '@/components/LeftSide.vue';
+import Greeting from '@/components/Greeting.vue';
+import Time from '@/components/Time.vue';
 import Bg from '@/components/Bg.vue';
-import RightSide from '@/components/RightSide.vue';
-import { useStore } from './store';
+import Saying from '@/components/Saying.vue';
+import Todo from '@/components/Todo.vue';
+import useTime from './hooks/useTime';
 
-const store = useStore();
-
-const initTimeInterval = () => store.dispatch('startTimeInterval');
+const { initTimeInterval } = useTime();
 
 onMounted(() => {
   initTimeInterval();
@@ -49,5 +55,22 @@ onMounted(() => {
   > * {
     flex: 1;
   }
+}
+
+.leftside-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
+
+.rightside-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.9);
+  position: relative;
 }
 </style>

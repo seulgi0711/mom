@@ -1,6 +1,8 @@
 <template>
   <div class="todo-wrapper">
-    <div class="description">What is your main focus for today?</div>
+    <div class="description">
+      What is your main focus for today?
+    </div>
     <div class="todo" v-if="hasTodo">{{ todo }}</div>
     <input
       class="todo-input"
@@ -13,23 +15,21 @@
 </template>
 
 <script lang="ts" setup>
-import { useStore } from '@/store';
-import { computed, onMounted, ref } from 'vue';
+import useTime from '@/hooks/useTime';
+import useTodo from '@/hooks/useTodo';
+import { onMounted, ref } from 'vue';
 
-const store = useStore();
 const todoInputValue = ref('');
-const todo = computed(() => store.state.todo);
-const hasTodo = computed(() => todo.value !== '');
-const getTodo = () => store.dispatch('getTodo');
-const setTodo = (value: string) => store.dispatch('setTodo', value);
+const { currentTime } = useTime();
+const { api, hasTodo, setTodo, todo } = useTodo();
 
 function handleEnter() {
-  setTodo(todoInputValue.value);
+  api.setTodo(currentTime.value, todoInputValue.value);
   todoInputValue.value = '';
 }
 
 onMounted(() => {
-  getTodo();
+  api.fetchTodo();
 });
 </script>
 

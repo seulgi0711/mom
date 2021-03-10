@@ -1,21 +1,11 @@
 <template>
-  <div class="saying-wrapper">"{{ saying }}"</div>
+  <div class="saying-wrapper">"{{ currnetSaying }}"</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
-import { randomRange } from '@/utils/random';
-import { useStore } from '@/store';
+import useSayings from '@/hooks/useSayings';
 
-const store = useStore();
-const index = ref(-1);
-
-const sayings = computed(() => store.state.sayings);
-const saying = computed(() => sayings.value[index.value]);
-
-onMounted(() => {
-  index.value = randomRange(0, sayings.value.length - 1);
-});
+const { currnetSaying } = useSayings();
 </script>
 
 <style scoped>

@@ -3,11 +3,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useStore } from '@/store';
-import { computed } from 'vue';
+import useTime from '@/hooks/useTime';
 
-const store = useStore();
-const formattedCurrentTime = computed(() => store.getters.formattedCurrentTime);
+const { formattedCurrentTime } = useTime();
 </script>
 
 <style scoped>
