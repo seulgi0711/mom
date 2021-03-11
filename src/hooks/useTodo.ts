@@ -7,9 +7,11 @@ import { foldW as oFoldW } from 'fp-ts/lib/Option';
 import { ref } from '@vue/reactivity';
 import { getStartTimestampOfDay } from '@/utils/date';
 import { computed } from '@vue/runtime-core';
+import useTime from './useTime';
 
 export default function useTodo() {
   const todo = ref('');
+  const { currentTime } = useTime();
 
   const setTodo = (value: string) => {
     todo.value = value;
@@ -27,12 +29,14 @@ export default function useTodo() {
         mapIoOption(convertStoredTodo),
         chainIoOption(validateStoredTodo),
         ioMap(oFoldW(api.deleteTodo, setTodo)),
-      );
+      )();
     },
-    setTodo: (currentTime: Date, value: string) => {
+    setTodo: (value: string) => {
       setTodo(value);
-      const storageValue = `${getStartTimestampOfDay(currentTime)}:${todo}`;
-      storage.setItem('todo', storageValue);
+      const storageValue = `${getStartTimestampOfDay(
+        currentTime.value,
+      )}:${value}`;
+      storage.setItem('todo', storageValue)();
     },
   };
 

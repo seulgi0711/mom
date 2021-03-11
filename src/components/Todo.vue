@@ -6,10 +6,10 @@
     <div class="todo" v-if="hasTodo">{{ todo }}</div>
     <input
       class="todo-input"
-      v-else
       v-model="todoInputValue"
       @keydown.enter="handleEnter"
       autofocus
+      v-else
     />
   </div>
 </template>
@@ -24,13 +24,11 @@ const { currentTime } = useTime();
 const { api, hasTodo, setTodo, todo } = useTodo();
 
 function handleEnter() {
-  api.setTodo(currentTime.value, todoInputValue.value);
+  api.setTodo(todoInputValue.value);
   todoInputValue.value = '';
 }
 
-onMounted(() => {
-  api.fetchTodo();
-});
+onMounted(api.fetchTodo);
 </script>
 
 <style scoped lang="scss">

@@ -2,31 +2,38 @@
   <div class="app-wrapper">
     <Bg />
     <div class="contents">
-      <div class="leftside-wrapper">
-        <Time />
-        <Greeting />
-      </div>
-      <div class="rightside-wrapper">
-        <Todo />
-        <Saying />
-      </div>
+      <template v-if="hasAuth">
+        <div class="leftside-wrapper">
+          <Time />
+          <Greeting />
+        </div>
+        <div class="rightside-wrapper">
+          <Todo />
+          <Saying />
+        </div>
+      </template>
+      <Login v-else />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import '@/global.css';
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import Greeting from '@/components/Greeting.vue';
 import Time from '@/components/Time.vue';
 import Bg from '@/components/Bg.vue';
 import Saying from '@/components/Saying.vue';
 import Todo from '@/components/Todo.vue';
+import Login from '@/components/Login.vue';
 import useTime from './hooks/useTime';
+import useAuth from './hooks/useAuth';
 
+const { api, hasAuth } = useAuth();
 const { initTimeInterval } = useTime();
 
 onMounted(() => {
+  api.fetchUsername();
   initTimeInterval();
 });
 </script>
