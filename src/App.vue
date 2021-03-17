@@ -18,23 +18,45 @@
 </template>
 
 <script lang="ts" setup>
+import Bg from '@/components/Bg.vue';
+import Greeting from '@/components/Greeting.vue';
+import Login from '@/components/Login.vue';
+import Saying from '@/components/Saying.vue';
+import Time from '@/components/Time.vue';
+import Todo from '@/components/Todo.vue';
 import '@/global.css';
 import { onMounted, watch } from 'vue';
-import Greeting from '@/components/Greeting.vue';
-import Time from '@/components/Time.vue';
-import Bg from '@/components/Bg.vue';
-import Saying from '@/components/Saying.vue';
-import Todo from '@/components/Todo.vue';
-import Login from '@/components/Login.vue';
+import useAuth, { firebaseAuth } from './hooks/useAuth';
 import useTime from './hooks/useTime';
-import useAuth from './hooks/useAuth';
+import * as storage from '@/effects/storage';
+import { pipe } from 'fp-ts/lib/function';
+import { mapIoOption } from './utils/fn';
 
-const { api, hasAuth } = useAuth();
+const { api, hasAuth, isLoading } = useAuth();
 const { initTimeInterval } = useTime();
 
 onMounted(() => {
-  api.fetchUsername();
   initTimeInterval();
+  firebaseAuth.signOut();
+});
+
+const signInWithEmailLink = () => {
+  if (firebaseAuth.isSignInWithEmailLink(location.href)) {
+    pipe(
+      storage.getItem('emailForSignIn'),
+      mapIoOption(api.signInWithEmailLink),
+    )();
+  }
+};
+
+const disposer = watch([isLoading, hasAuth], ([isLoading, hasAuth]) => {
+  if (!isLoading) {
+    if (hasAuth) {
+      disposer();
+    } else {
+      signInWithEmailLink();
+    }
+  }
 });
 </script>
 

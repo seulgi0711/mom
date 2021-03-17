@@ -12,8 +12,9 @@ const wrapperStyle = computed(() => ({
 }));
 
 async function fetchBackground() {
-  const { color, urls } = await api.fetchBgUrl();
-  background.value = `center / cover no-repeat url("${urls.full}"), ${color}`;
+  // const { color, urls } = await api.fetchBgUrl();
+  // background.value = `center / cover no-repeat url("${urls.full}"), ${color}`;
+  background.value = `center / cover no-repeat url("https://images.unsplash.com/photo-1615779912133-c503e7c3a43a?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMDk0NTl8MHwxfHJhbmRvbXx8fHx8fHx8fDE2MTU5NjU4NDE&ixlib=rb-1.2.1&q=85"), rgb(64, 115, 115)`;
 }
 
 onMounted(() => {

@@ -1,14 +1,18 @@
 <template>
-  <div class="greeting-wrapper">{{ greetingByTime }}</div>
+  <div class="greeting-wrapper">
+    {{ greetingByTime }} <span class="username">{{ username }}</span>
+  </div>
 </template>
 
 <script lang="ts" setup>
+import useAuth from '@/hooks/useAuth';
 import useTime from '@/hooks/useTime';
 import { within } from '@/utils/number';
 import { pipe } from 'fp-ts/lib/function';
 import { always, cond } from 'ramda';
 import { computed } from 'vue';
 
+const { username } = useAuth();
 const { currentHours } = useTime();
 const greetingByTime = computed(() =>
   pipe(
@@ -27,6 +31,10 @@ const greetingByTime = computed(() =>
 <style scoped>
 .greeting-wrapper {
   font-size: 3em;
-  font-weight: 500;
+  text-align: center;
+}
+
+.username {
+  font-weight: bold;
 }
 </style>
