@@ -1,6 +1,7 @@
 <template>
   <div class="app-wrapper">
     <Bg />
+    <Weather />
     <div class="contents">
       <template v-if="hasAuth">
         <div class="leftside-wrapper">
@@ -17,46 +18,64 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import Bg from '@/components/Bg.vue';
+import Weather from '@/components/Weather.vue';
 import Greeting from '@/components/Greeting.vue';
 import Login from '@/components/Login.vue';
 import Saying from '@/components/Saying.vue';
 import Time from '@/components/Time.vue';
 import Todo from '@/components/Todo.vue';
+import * as storage from '@/effects/storage';
 import '@/global.css';
-import { onMounted, watch } from 'vue';
+import { pipe } from 'fp-ts/lib/function';
+import { defineComponent, onMounted, watch } from 'vue';
 import useAuth, { firebaseAuth } from './hooks/useAuth';
 import useTime from './hooks/useTime';
-import * as storage from '@/effects/storage';
-import { pipe } from 'fp-ts/lib/function';
 import { mapIoOption } from './utils/fn';
 
-const { api, hasAuth, isLoading } = useAuth();
-const { initTimeInterval } = useTime();
+export default defineComponent({
+  name: 'App',
+  components: {
+    Bg,
+    Weather,
+    Greeting,
+    Login,
+    Saying,
+    Time,
+    Todo,
+  },
+  setup() {
+    const { api, hasAuth, isLoading } = useAuth();
+    const { initTimeInterval } = useTime();
 
-onMounted(() => {
-  initTimeInterval();
-  firebaseAuth.signOut();
-});
+    onMounted(() => {
+      initTimeInterval();
+    });
 
-const signInWithEmailLink = () => {
-  if (firebaseAuth.isSignInWithEmailLink(location.href)) {
-    pipe(
-      storage.getItem('emailForSignIn'),
-      mapIoOption(api.signInWithEmailLink),
-    )();
-  }
-};
+    const signInWithEmailLink = () => {
+      if (firebaseAuth.isSignInWithEmailLink(location.href)) {
+        pipe(
+          storage.getItem('emailForSignIn'),
+          mapIoOption(api.signInWithEmailLink),
+        )();
+      }
+    };
 
-const disposer = watch([isLoading, hasAuth], ([isLoading, hasAuth]) => {
-  if (!isLoading) {
-    if (hasAuth) {
-      disposer();
-    } else {
-      signInWithEmailLink();
-    }
-  }
+    const disposer = watch([isLoading, hasAuth], ([isLoading, hasAuth]) => {
+      if (!isLoading) {
+        if (hasAuth) {
+          disposer();
+        } else {
+          signInWithEmailLink();
+        }
+      }
+    });
+
+    return {
+      hasAuth,
+    };
+  },
 });
 </script>
 

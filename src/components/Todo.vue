@@ -3,7 +3,19 @@
     <div class="description">
       What is your main focus for today?
     </div>
-    <div class="todo" v-if="hasTodo">{{ todo }}</div>
+    <template v-if="hasTodo">
+      <div class="todo">
+        <div class="todo-content" :class="{ done: todo.done }">
+          {{ todo.content }}
+        </div>
+        <input
+          class="todo-checkbox"
+          type="checkbox"
+          :checked="todo.done"
+          @change="handleChangeDone"
+        />
+      </div>
+    </template>
     <input
       class="todo-input"
       v-model="todoInputValue"
@@ -14,21 +26,38 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import useTime from '@/hooks/useTime';
+<script lang="ts">
 import useTodo from '@/hooks/useTodo';
-import { onMounted, ref } from 'vue';
+import { pipe } from 'fp-ts/lib/function';
+import { assoc } from 'ramda';
+import { defineComponent, onMounted, ref } from 'vue';
 
-const todoInputValue = ref('');
-const { currentTime } = useTime();
-const { api, hasTodo, setTodo, todo } = useTodo();
+export default defineComponent({
+  name: 'Todo',
+  setup() {
+    const todoInputValue = ref('');
+    const { api, hasTodo, todo } = useTodo();
 
-function handleEnter() {
-  api.setTodo(todoInputValue.value);
-  todoInputValue.value = '';
-}
+    const handleEnter = () => {
+      api.setTodo({ content: todoInputValue.value, done: false });
+      todoInputValue.value = '';
+    };
 
-onMounted(api.fetchTodo);
+    const handleChangeDone = () => {
+      api.setTodo(assoc('done', !todo.done, todo));
+    };
+
+    onMounted(api.fetchTodo);
+
+    return {
+      hasTodo,
+      todo,
+      todoInputValue,
+      handleEnter,
+      handleChangeDone,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">
@@ -44,6 +73,30 @@ onMounted(api.fetchTodo);
   color: rgba(255, 255, 255, 1);
   font-size: 2em;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &:hover &-checkbox {
+    visibility: visible;
+  }
+
+  &-content {
+    flex: 1;
+    padding: 0 25px;
+
+    &.done {
+      text-decoration: line-through;
+    }
+  }
+
+  &-checkbox {
+    visibility: hidden;
+    position: absolute;
+    right: 0;
+    transform: scale(1.5);
+  }
 }
 
 .todo-input {

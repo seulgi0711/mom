@@ -11,3 +11,8 @@ export const mapIoOption = <A, B>(f: (a: A) => B) => (
 export const chainIoOption = <A, B>(f: (a: A) => Option<B>) => (ioa: IO<Option<A>>): IO<Option<B>> => {
   return ioMap(oChain(f))(ioa);
 }
+
+export const logTap = <T>(label: string) => (value: T) => {
+  console.log(label, value);
+  return value;
+}
